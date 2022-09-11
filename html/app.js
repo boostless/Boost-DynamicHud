@@ -30,15 +30,13 @@ function main(){
                 color: '#ef4444',
                 icon: 'fa-solid fa-heart',
                 show: true,
-                value: 0.5,
             },
             'armor':{
                 progress: null,
                 name: 'ar',
                 color: '#3b82f6',
                 icon: 'fa-solid fa-shield',
-                show: true,
-                value: 1.0,
+                show: false,
                 displayFrom: 0.01, // You can set display from value the status will be hidden
             },
             'hunger':{
@@ -47,7 +45,6 @@ function main(){
                 color: '#f59e0b',
                 icon: 'fa-solid fa-pizza-slice',
                 show: true,
-                value: 0.3,
             },
             'thirst':{
                 progress: null,
@@ -56,6 +53,14 @@ function main(){
                 icon: 'fa-solid fa-droplet',
                 show: true,
                 value: 0.5,
+            },
+            'drunk':{
+                progress: null,
+                name: 'dr',
+                color: '#6366f1',
+                icon: 'fa-solid fa-wine-bottle',
+                show: false,
+                displayFrom: 0.01
             }
         },
         info_elements:{
