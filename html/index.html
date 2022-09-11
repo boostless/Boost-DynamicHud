@@ -26,12 +26,10 @@
 
     <div class="info-hud flex flex-col justify-between space-y-1 transition-all ease-in-out" :style="`position: absolute; top: ${position.info.top}px; left:${position.info.left}px; height: ${position.info.height}px`" x-show="infoHud" x-transition>
         <template x-for="comp in info_elements">
-            <div x-show="comp.show" class="bg-black bg-opacity-70 w-fit px-1.5 rounded-xl space-x-1 flex items-center" x-transition>
+            <div x-show="comp.show" :class="{'py-1': height >= 1080 || height <= 768}" class="bg-black bg-opacity-70 w-fit px-1.5 rounded-xl space-x-1 flex items-center" x-transition>
                 <div :class="{
-                    'w-9': height != 768, 
-                    'h-9': height != 768,
-                    'w-5': height == 768,
-                    'h-5': height == 768,
+                    'w-9 h-9': height != 768, 
+                    'w-5 h-5': height == 768,
                 }" class="flex items-center justify-center bg-black bg-opacity-40 rounded-full">
                     <span class="text-sm" :style="`color: ${comp.color}`"><i :class="comp.icon"></i></span>         
                 </div>
