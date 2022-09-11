@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://kit.fontawesome.com/cce34a4cfd.js" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/progressbar.js/1.1.0/progressbar.min.js" integrity="sha512-EZhmSl/hiKyEHklogkakFnSYa5mWsLmTC4ZfvVzhqYNLPbXKAXsjUYRf2O9OlzQN33H0xBVfGSEIUeqt9astHQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <link href="tailwind.css" rel="stylesheet">
+    <title>Boost-DynamicHud</title>
+    <style>
+        ::-webkit-scrollbar {
+            display: none;
+        }
+    </style>
+</head>
+<body class="h-screen w-screen text-white" x-data="main()" x-init="listen()" x-show='show'>
+    <div class="status-hud px-2 py-1.5 bg-black bg-opacity-70 rounded-xl flex transition-all ease-in-out" :style="`position: absolute; top: ${position.status.top}px; left:${position.status.left}px`" x-show="statusHud" x-transition>
+        <template x-for="comp in elements">
+            <div x-init="createBar(comp)" :class="comp.name" class="mx-0.5 h-10 w-10 bg-black rounded-full bg-opacity-40 flex justify-center items-center" :style="`color: ${comp.color};`" x-show="comp.show" x-transition>
+                <span class="absolute"><i :class="comp.icon"></i></span>
+            </div>
+        </template>  
+    </div>
+
+    <div class="info-hud flex flex-col justify-between space-y-1 transition-all ease-in-out" :style="`position: absolute; top: ${position.info.top}px; left:${position.info.left}px; height: ${position.info.height}px`" x-show="infoHud" x-transition>
+        <template x-for="comp in info_elements">
+            <div x-show="comp.show" class="bg-black bg-opacity-70 w-fit px-1.5 rounded-xl space-x-1 flex items-center" x-transition>
+                <div :class="{
+                    'w-9': height != 768, 
+                    'h-9': height != 768,
+                    'w-5': height == 768,
+                    'h-5': height == 768,
+                }" class="flex items-center justify-center bg-black bg-opacity-40 rounded-full">
+                    <span class="text-sm" :style="`color: ${comp.color}`"><i :class="comp.icon"></i></span>         
+                </div>
+                <span :class="{'text-sm': height == 768}" class="font-semibold" x-text="comp.value"></span>
+            </div> 
+        </template>
+    </div>
+</body>
+<script src="app.js" type="text/javascript"></script>
+</html>
