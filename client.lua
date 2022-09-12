@@ -2,23 +2,36 @@ local ped = nil
 local PlayerData, data = nil, {}
 
 local function GetMinimapAnchor()
-    local safezone = GetSafeZoneSize()
-    local safezone_x = 1.0 / 20.0
-    local safezone_y = 1.0 / 20.0
-    local aspect_ratio = GetAspectRatio(0)
-    local res_x, res_y = GetActiveScreenResolution()
-    local xscale = 1.0 / res_x
-    local yscale = 1.0 / res_y
-    local Minimap = {}
-    Minimap.width = xscale * (res_x / (4 * aspect_ratio))
-    Minimap.height = yscale * (res_y / 5.674)
-    Minimap.left_x = xscale * (res_x * (safezone_x * ((math.abs(safezone - 1.0)) * 10)))
-    Minimap.bottom_y = 1.0 - yscale * (res_y * (safezone_y * ((math.abs(safezone - 1.0)) * 10)))
-    Minimap.right_x = Minimap.left_x + Minimap.width
-    Minimap.top_y = Minimap.bottom_y - Minimap.height
-    Minimap.x = Minimap.left_x
-    Minimap.y = Minimap.top_y
-    return Minimap
+    local minimap = {}
+	local resX, resY = GetActiveScreenResolution()
+	local aspectRatio = GetAspectRatio()
+	local scaleX = 1/resX
+	local scaleY = 1/resY
+	local minimapRawX, minimapRawY
+	SetScriptGfxAlign(string.byte('L'), string.byte('B'))
+	if IsBigmapActive() then
+		minimapRawX, minimapRawY = GetScriptGfxPosition(-0.003975, 0.022 + (-0.460416666))
+		minimap.width = scaleX*(resX/(2.52*aspectRatio))
+		minimap.height = scaleY*(resY/(2.3374))
+	else
+		minimapRawX, minimapRawY = GetScriptGfxPosition(-0.0045, 0.002 + (-0.188888))
+		minimap.width = scaleX*(resX/(4*aspectRatio))
+		minimap.height = scaleY*(resY/(5.674))
+	end
+	ResetScriptGfxAlign()
+	minimap.leftX = minimapRawX
+	minimap.rightX = minimapRawX+minimap.width
+	minimap.topY = minimapRawY
+	minimap.bottomY = minimapRawY+minimap.height
+	minimap.X = minimapRawX+(minimap.width/2)
+	minimap.Y = minimapRawY+(minimap.height/2)
+
+	return {
+        x = minimap.leftX+0.005,
+        y = minimap.topY+0.014,
+        height = minimap.height,
+        right_x = minimap.rightX+0.005,
+    }
 end
 
 local function getInfo()
@@ -70,7 +83,6 @@ end)
 RegisterNetEvent('esx:playerLoaded', function(playerData)
     Wait(100)
     ped = PlayerPedId()
-    local anchor = GetMinimapAnchor()
 
     PlayerData = {
         job = playerData.job,
@@ -80,14 +92,13 @@ RegisterNetEvent('esx:playerLoaded', function(playerData)
     SendNUIMessage({
         ui = 'init',
         show = true,
-        data = {x = anchor.x, y = anchor.y,height = anchor.height, right_x = anchor.right_x}
+        data = GetMinimapAnchor()
     })
 
     SendNUIMessage({
         ui = 'updateInfo',
         data = getInfo()
     })
-    anchor = nil
 end)
 
 AddEventHandler('esx_status:onTick', function(data)
@@ -132,7 +143,6 @@ CreateThread(function()
     if ESX.PlayerLoaded then
         Wait(100)
         ped = PlayerPedId()
-        local anchor = GetMinimapAnchor()
 
         PlayerData = {
             job = ESX.GetPlayerData().job,
@@ -142,7 +152,7 @@ CreateThread(function()
         SendNUIMessage({
             ui = 'init',
             show = true,
-            data = {x = anchor.x, y = anchor.y,height = anchor.height, right_x = anchor.right_x}
+            data = GetMinimapAnchor()
         })
 
         
@@ -150,17 +160,14 @@ CreateThread(function()
             ui = 'updateInfo',
             data = getInfo()
         })
-        anchor = nil
     end
 end)
 
 -- Use this when changing res
 RegisterCommand('fixui', function()
-    local anchor = GetMinimapAnchor()
     SendNUIMessage({
         ui = 'init',
         show = true,
-        data = {x = anchor.x, y = anchor.y,height = anchor.height, right_x = anchor.right_x}
+        data = GetMinimapAnchor()
     })
-    anchor = nil
 end)

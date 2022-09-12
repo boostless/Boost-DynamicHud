@@ -4,6 +4,7 @@ function main(){
         statusHud: true,
         infoHud: true,
         height: 1080,
+        loaded: false,
         position: {
             'status':{
                 top: 0,
@@ -90,6 +91,11 @@ function main(){
             }
         },
         listen(){
+            if(!this.loaded){
+                setTimeout(() =>{
+                    this.loaded = true
+                }, 500)
+            }
             window.addEventListener('message', (event) => {
                 let data = event.data
                 switch(data.ui){
@@ -105,6 +111,7 @@ function main(){
                         this.show = data.show
                         break;
                     case 'updateStatus':
+                        if(!this.loaded) return
                         for(let i=0; i<data.data.length; i++){
                             let status = data.data[i]
                             let element = this.elements[status.name]
